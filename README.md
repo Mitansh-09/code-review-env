@@ -1,3 +1,15 @@
+---
+title: Code Review Env
+emoji: 🔍
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_file: server/app.py
+pinned: false
+tags:
+  - openenv
+---
+
 # 🔍 Code Review Environment
 
 **Team: Meta Mesh** | OpenEnv Hackathon — Round 1
@@ -67,7 +79,7 @@ Code review is one of the most important — and time-consuming — tasks in sof
 ### Task 1 — Syntax & Basic Error Detection (Easy)
 Identify syntax errors, undefined variables, and type errors in a simple Python function.
 - **Max Steps:** 3
-- **Expected Issues:** 4 (missing colon, undefined variables, type concatenation error)
+- **Expected Issues:** 4
 
 ### Task 2 — Code Smell & Quality Review (Medium)
 Identify code quality issues: poor naming, magic numbers, missing error handling, hardcoded paths, missing docstrings, SRP violations.
@@ -77,13 +89,11 @@ Identify code quality issues: poor naming, magic numbers, missing error handling
 ### Task 3 — Security Vulnerability Detection (Hard)
 Find critical security vulnerabilities: SQL injection, hardcoded credentials, insecure randomness, path traversal, sensitive data exposure.
 - **Max Steps:** 5
-- **Expected Issues:** 6 (including critical CVEs)
+- **Expected Issues:** 6
 
 ---
 
 ## 🏆 Reward Function
-
-The reward is a composite score (0.0–1.0):
 
 | Component | Weight | Description |
 |---|---|---|
@@ -93,8 +103,6 @@ The reward is a composite score (0.0–1.0):
 | Summary Quality | 10% | Is the summary meaningful? |
 | Severity Labels | 5% | Did the agent label severity correctly? |
 
-Partial progress is rewarded — agents get signal even for finding some but not all issues.
-
 ---
 
 ## 🚀 Setup & Usage
@@ -102,10 +110,10 @@ Partial progress is rewarded — agents get signal even for finding some but not
 ### Local Setup
 
 ```bash
-git clone https://huggingface.co/spaces/MetaMesh/code-review-env
+git clone https://github.com/Mitansh-09/code-review-env
 cd code-review-env
 pip install -r requirements.txt
-uvicorn app:app --host 0.0.0.0 --port 7860
+uvicorn server.app:app --host 0.0.0.0 --port 7860
 ```
 
 ### Docker
@@ -115,31 +123,13 @@ docker build -t code-review-env .
 docker run -p 7860:7860 code-review-env
 ```
 
-### API Usage
-
-```python
-import requests
-
-# Start a new episode
-obs = requests.post("http://localhost:7860/reset", json={"task_id": "task_1_syntax_errors"}).json()
-
-# Take an action
-action = {
-    "issues": [
-        {"type": "syntax_error", "line": 3, "description": "Missing colon in for loop", "severity": "high"}
-    ],
-    "summary": "Found syntax error on line 3.",
-    "approved": False
-}
-result = requests.post("http://localhost:7860/step", json=action).json()
-print(result["reward"]["score"])  # 0.0–1.0
-```
-
-### Baseline Script
+### Inference Script
 
 ```bash
-export OPENAI_API_KEY=your_key_here
-python baseline.py
+export API_BASE_URL=https://api.openai.com/v1
+export MODEL_NAME=gpt-4o-mini
+export HF_TOKEN=your_api_key_here
+python inference.py
 ```
 
 ---
