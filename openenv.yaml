@@ -1,0 +1,78 @@
+name: code-review-env
+version: "1.0.0"
+description: >
+  An OpenEnv-compliant reinforcement learning environment where AI agents
+  learn to perform automated code review. The agent reviews Python code
+  snippets and must identify bugs, code quality issues, and security
+  vulnerabilities across three difficulty levels.
+
+tags:
+  - openenv
+  - code-review
+  - security
+  - software-engineering
+  - llm-agent
+
+language: python
+framework: openenv
+
+observation_space:
+  type: object
+  fields:
+    task_id: string
+    task_name: string
+    task_description: string
+    code_snippet: string
+    language: string
+    difficulty: string
+    step_count: integer
+    max_steps: integer
+    issues_found_so_far: array
+
+action_space:
+  type: object
+  fields:
+    issues: array
+    summary: string
+    approved: boolean
+
+reward:
+  type: float
+  min: 0.0
+  max: 1.0
+  description: >
+    Composite score based on issue detection accuracy (60%),
+    issue count completeness (15%), approval correctness (10%),
+    summary quality (10%), severity labeling (5%).
+
+tasks:
+  - id: task_1_syntax_errors
+    name: "Syntax & Basic Error Detection"
+    difficulty: easy
+    max_steps: 3
+    description: "Identify syntax errors, undefined variables, and type errors in a simple Python function."
+
+  - id: task_2_code_smells
+    name: "Code Smell & Quality Review"
+    difficulty: medium
+    max_steps: 4
+    description: "Identify code quality issues: poor naming, magic numbers, missing error handling, hardcoded paths, missing docstrings, SRP violations."
+
+  - id: task_3_security
+    name: "Security Vulnerability Detection"
+    difficulty: hard
+    max_steps: 5
+    description: "Find critical security vulnerabilities: SQL injection, hardcoded credentials, insecure randomness, path traversal, sensitive data exposure."
+
+endpoints:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+  tasks: GET /tasks
+  grader: POST /grader
+  baseline: POST /baseline
+
+deployment:
+  platform: huggingface-spaces
+  port: 7860
+  dockerfile: Dockerfile

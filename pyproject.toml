@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "code-review-env"
+version = "1.0.0"
+description = "OpenEnv-compliant RL environment for AI code review agents."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+keywords = ["openenv", "code-review", "rl", "reinforcement-learning", "llm-agent"]
+
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.30.6",
+    "pydantic==2.8.2",
+    "openai>=2.7.2",
+    "pyyaml==6.0.2",
+    "requests==2.32.3",
+    "openenv-core>=0.2.0",
+]
+
+[project.scripts]
+serve = "server.app:app"
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[project.urls]
+Homepage = "https://huggingface.co/spaces/Mitansh08/code-review-env"
+Repository = "https://github.com/Mitansh08/code-review-env"
