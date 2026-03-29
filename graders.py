@@ -1,5 +1,5 @@
 from typing import Dict, Any, List
-from environment.models import Action, Reward
+from models import Action, Reward
 
 
 def _keyword_match(text: str, keywords: List[str]) -> bool:
