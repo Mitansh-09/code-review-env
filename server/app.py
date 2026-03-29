@@ -34,19 +34,20 @@ class ResetRequest(BaseModel):
     task_id: Optional[str] = "task_1_syntax_errors"
 
 @app.post("/reset", response_model=Observation)
-def reset(request: ResetRequest = Body(default=ResetRequest())):
+async def reset(request: Request):
     try:
-        obs = env.reset(task_id=request.task_id)
+        body = await request.body()
+        task_id = "task_1_syntax_errors"
+        if body:
+            try:
+                import json
+                data = json.loads(body)
+                task_id = data.get("task_id", "task_1_syntax_errors") or "task_1_syntax_errors"
+            except Exception:
+                pass
+        obs = env.reset(task_id=task_id)
         return obs
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@app.post("/step", response_model=StepResult)
-def step(action: Action):
-    try:
-        result = env.step(action)
-        return result
-    except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/state", response_model=EnvironmentState)
