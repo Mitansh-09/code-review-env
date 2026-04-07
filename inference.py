@@ -76,11 +76,10 @@ def main():
     results = {}
 
     for task_id in TASK_IDS:
-        print(f"\n{'='*50}\nTask: {task_id}\n{'='*50}")
-        obs = env.reset(task_id=task_id)
-        print(f"Name: {obs.task_name} | Difficulty: {obs.difficulty}")
+    print(f"[START] task={task_id}", flush=True)
+    obs = env.reset(task_id=task_id)
 
-        for step in range(obs.max_steps):
+    for step in range(obs.max_steps):
             user_content = f"""Task: {obs.task_name}
 Difficulty: {obs.difficulty}
 
@@ -121,12 +120,12 @@ Step: {obs.step_count + 1} / {obs.max_steps}
             )
 
             result = env.step(action)
-            print(f"Step {step+1}: {len(action.issues)} issues -> reward {result.reward.score:+.4f} | Done: {result.done}")
+            print(f"[STEP] step={step+1} reward={result.reward.score:.4f}", flush=True)
             obs = result.observation
 
             if result.done:
-                print("Episode complete.")
-                break
+            print(f"[END] task={task_id} score={result.reward.score:.4f} steps={step+1}", flush=True)
+            break
 
         results[task_id] = {
             "task_name": obs.task_name,
